@@ -1,0 +1,37 @@
+#include <Wire.h>
+#include "DHT.h"
+DHT dht(7, DHT11);
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x3F, 16, 2);
+#include <SoftwareSerial.h>
+SoftwareSerial BTSerial(0, 1);
+
+void setup()
+{
+  lcd.init();
+  lcd.backlight();
+  BTSerial.begin(9600);
+}
+
+void loop()
+{
+  int H = dht.readHumidity(), T = dht.readTemperature();
+  
+  lcd.setCursor(0, 0);
+  lcd.print("Humidity: ");
+  lcd.print(H);
+  lcd.print("%");
+  lcd.setCursor(0, 1);
+  lcd.print("Temperature: ");
+  lcd.print(T);
+  lcd.print("C");
+  delay(100);
+  
+  BTSerial.write("Humidity: ");
+  BTSerial.write(H);
+  BTSerial.write("%    ");
+  BTSerial.write("Temperature: ");
+  BTSerial.write(T);
+  BTSerial.write("C\n");
+  delay(100);
+}
